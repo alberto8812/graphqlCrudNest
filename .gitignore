@@ -1,8 +1,9 @@
 # compiled output
+/postgres
 /dist
 /node_modules
 /build
-
+.env
 # Logs
 logs
 *.log
