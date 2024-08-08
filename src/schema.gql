@@ -4,7 +4,16 @@
 
 type Item {
   """Example field (placeholder)"""
-  id: Int!
+  id: ID!
+
+  """Example field (placeholder)"""
+  name: String!
+
+  """Example field (placeholder)"""
+  quantity: Float!
+
+  """Example field (placeholder)"""
+  quantityUnits: String
 }
 
 type Query {
@@ -19,12 +28,24 @@ type Mutation {
 }
 
 input CreateItemInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """nombre del item"""
+  name: String!
+
+  """cantidad de productos que puede tener"""
+  quantity: Float!
+
+  """es cantidad de unidades"""
+  quantityUnits: String
 }
 
 input UpdateItemInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  """nombre del item"""
+  name: String
+
+  """cantidad de productos que puede tener"""
+  quantity: Float
+
+  """es cantidad de unidades"""
+  quantityUnits: String
   id: Int!
 }
