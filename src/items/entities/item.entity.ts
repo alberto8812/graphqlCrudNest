@@ -1,5 +1,4 @@
 import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
-import { IsOptional } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({name:'items'})

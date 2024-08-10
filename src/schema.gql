@@ -16,15 +16,33 @@ type Item {
   quantityUnits: String
 }
 
+type User {
+  """Example field (placeholder)"""
+  id: ID!
+  fullName: String!
+  email: String!
+  roles: [String!]!
+  isActive: Boolean!
+}
+
+type AuthResponse {
+  token: String!
+  users: User!
+}
+
 type Query {
   items: [Item!]!
-  item(id: Int!): Item!
+  item(id: ID!): Item!
+  users: [User!]!
+  user(id: ID!): User!
 }
 
 type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
-  removeItem(id: Int!): Item!
+  removeItem(id: ID!): Item!
+  blockUser(id: ID!): User!
+  signUp(signUpInput: SignUpInput!): AuthResponse!
 }
 
 input CreateItemInput {
@@ -47,5 +65,11 @@ input UpdateItemInput {
 
   """es cantidad de unidades"""
   quantityUnits: String
-  id: Int!
+  id: ID!
+}
+
+input SignUpInput {
+  email: String!
+  fullName: String!
+  password: String!
 }
