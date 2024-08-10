@@ -18,7 +18,7 @@ type Item {
 
 type User {
   """Example field (placeholder)"""
-  id: Int!
+  id: ID!
   fullName: String!
   email: String!
   roles: [String!]!
