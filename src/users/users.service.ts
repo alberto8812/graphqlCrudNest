@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { SignUpInput } from 'src/auth/dto/inputs/singnup.input';
-import { Repository } from 'typeorm';
+import { Code, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt'
 
@@ -41,6 +41,17 @@ export class UsersService {
     throw new Error(`find no implment`);
   }
 
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOneByOrFail({ email })
+    } catch (error) {
+      this.handleeDbError({
+        code: 'error-01',
+        detail: `${email} no found`
+      })
+    }
+  }
+
   block(id: string): Promise<User> {
     throw new Error(`find no implment`);
   }
@@ -48,6 +59,11 @@ export class UsersService {
   private handleeDbError(error: any): never {
 
     if (error.code == 23505) {
+      throw new BadRequestException(error.detail.replace('key', ''))
+
+    }
+
+    if (error.code == 'error-01') {
       throw new BadRequestException(error.detail.replace('key', ''))
 
     }
