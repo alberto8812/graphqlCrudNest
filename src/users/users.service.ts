@@ -38,7 +38,14 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    throw new Error(`find no implment`);
+    try {
+      return await this.userRepository.findOneByOrFail({ id })
+    } catch (error) {
+      this.handleeDbError({
+        code: 'error-01',
+        detail: `${id} no found`
+      })
+    }
   }
 
   async findOneByEmail(email: string): Promise<User> {
