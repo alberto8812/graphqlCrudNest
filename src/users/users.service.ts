@@ -5,6 +5,7 @@ import { Code, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt'
 import { ValidRoles } from 'src/auth/enum/valid-rules.enum';
+import { UpdateUserInput } from './dto/update-user.input';
 
 
 @Injectable()
@@ -16,12 +17,6 @@ export class UsersService {
   ) { }
 
   async create(signUpInput: SignUpInput): Promise<User> {
-    console.log(
-      {
-        password: bcrypt.hashSync(signUpInput.password, 10),
-        ...signUpInput
-      }
-    )
     try {
       const newUser = this.userRepository.create({
         password: bcrypt.hashSync(signUpInput.password, 10),
@@ -36,12 +31,13 @@ export class UsersService {
 
   async findAll(roles: ValidRoles[]): Promise<User[]> {
     if (roles.length === 0) {
-      return this.userRepository.find()
+      return this.userRepository.find({ relations: { lastUpdateBy: true } })
     }
-    return this.userRepository.createQueryBuilder()
-      .andWhere('ARRAY[roles] && ARRAY [:...roles]') //en la columna  de array que tengo  de roles tiene que estar  en el array de roles
-      .setParameter('roles', roles)// que lo vamos a buscar  
-      .getMany()
+    return this.userRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.lastUpdateBy', 'lastUpdateBy')
+      .where('user.roles && :roles', { roles })
+      .getMany();
+
 
   }
 
@@ -67,8 +63,30 @@ export class UsersService {
     }
   }
 
-  block(id: string): Promise<User> {
-    throw new Error(`find no implment`);
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+    user: User
+  ): Promise<User> {
+
+    try {
+      const user = await this.userRepository.preload({ ...updateUserInput, id })
+      user.lastUpdateBy = user;
+      return await this.userRepository.save(user)
+
+    } catch (error) {
+      this.handleeDbError({
+        code: 'error-02',
+        detail: `user no update`
+      })
+    }
+  }
+
+  async block(id: string, adminUser: User): Promise<User> {
+    const userToblock = await this.findOne(id);
+    userToblock.isActive = false;
+    userToblock.lastUpdateBy = adminUser;
+    return await this.userRepository.save(userToblock)
   }
 
   private handleeDbError(error: any): never {
