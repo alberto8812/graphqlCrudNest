@@ -4,6 +4,7 @@ import { SignUpInput } from 'src/auth/dto/inputs/singnup.input';
 import { Code, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt'
+import { ValidRoles } from 'src/auth/enum/valid-rules.enum';
 
 
 @Injectable()
@@ -33,8 +34,15 @@ export class UsersService {
 
   }
 
-  async findAll(): Promise<User[]> {
-    return [];
+  async findAll(roles: ValidRoles[]): Promise<User[]> {
+    if (roles.length === 0) {
+      return this.userRepository.find()
+    }
+    return this.userRepository.createQueryBuilder()
+      .andWhere('ARRAY[roles] && ARRAY [:...roles]') //en la columna  de array que tengo  de roles tiene que estar  en el array de roles
+      .setParameter('roles', roles)// que lo vamos a buscar  
+      .getMany()
+
   }
 
   async findOne(id: string): Promise<User> {

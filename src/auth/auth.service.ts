@@ -31,6 +31,7 @@ export class AuthService {
 
     }
 
+
     async login(loginInput: LoginInput): Promise<AuthResponse> {
         const user = await this.usersService.findOneByEmail(loginInput.email);
         const token = this.jwtService.sign({ id: user.id });//firmamos el nuevo token lo que queremos que cargue grabar lo minimo posible
@@ -51,5 +52,13 @@ export class AuthService {
         }
         delete user.password
         return user;
+    }
+
+    revalidateToken(user: User): AuthResponse {
+        const token = this.jwtService.sign({ id: user.id });//firmamos el nuevo token lo que queremos que cargue grabar lo minimo posible
+        return {
+            token,
+            users: user
+        }
     }
 }
