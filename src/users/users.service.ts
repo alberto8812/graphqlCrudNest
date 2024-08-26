@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt'
 import { ValidRoles } from 'src/auth/enum/valid-rules.enum';
 import { UpdateUserInput } from './dto/update-user.input';
+import { ItemsService } from 'src/items/items.service';
 
 
 @Injectable()
@@ -13,7 +14,8 @@ export class UsersService {
   private logger = new Logger('UserService')
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly itemService: ItemsService
   ) { }
 
   async create(signUpInput: SignUpInput): Promise<User> {

@@ -52,4 +52,12 @@ export class ItemsService {
     await this.itemRepository.delete(id)
     return { ...item, id };
   }
+
+  async itemCounterByUser(user: User): Promise<number> {
+    return this.itemRepository.count({ where: { user: { id: user.id } } })
+  }
 }
+
+
+
+

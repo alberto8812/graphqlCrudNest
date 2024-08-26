@@ -45,7 +45,7 @@ export class User {
   @JoinColumn({ name: 'lastUpdateBy' })// determinamos la ralacion 
   lastUpdateBy?: User;
   // NEW RELATION WITH ITEM
-  @OneToMany(() => Item, (item) => item.user)
+  @OneToMany(() => Item, (item) => item.user, { lazy: true })
   @Field(() => [Item])
   items: Item[]
 }
