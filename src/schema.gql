@@ -2,20 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Item {
-  """Example field (placeholder)"""
-  id: ID!
-
-  """Example field (placeholder)"""
-  name: String!
-
-  """Example field (placeholder)"""
-  quantity: Float!
-
-  """Example field (placeholder)"""
-  quantityUnits: String
-}
-
 type User {
   """Example field (placeholder)"""
   id: ID!
@@ -24,6 +10,19 @@ type User {
   roles: [String!]!
   isActive: Boolean!
   lastUpdateBy: User
+  items: [Item!]!
+}
+
+type Item {
+  """Example field (placeholder)"""
+  id: ID!
+
+  """Example field (placeholder)"""
+  name: String!
+
+  """Example field (placeholder)"""
+  quantityUnits: String
+  user: User!
 }
 
 type AuthResponse {
@@ -80,9 +79,6 @@ input CreateItemInput {
   """nombre del item"""
   name: String!
 
-  """cantidad de productos que puede tener"""
-  quantity: Float!
-
   """es cantidad de unidades"""
   quantityUnits: String
 }
@@ -90,9 +86,6 @@ input CreateItemInput {
 input UpdateItemInput {
   """nombre del item"""
   name: String
-
-  """cantidad de productos que puede tener"""
-  quantity: Float
 
   """es cantidad de unidades"""
   quantityUnits: String
