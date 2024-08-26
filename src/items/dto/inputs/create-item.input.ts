@@ -7,15 +7,15 @@ export class CreateItemInput {
   @IsString()
   @IsNotEmpty()
   name: string;
-  
-  @Field(() => Float, { description: 'cantidad de productos que puede tener' })
-  @IsNumber()
-  @IsPositive()
-  @Min(0)
-  quantity:number;
 
-  @Field(() => String, { description: 'es cantidad de unidades' ,nullable:true})
+  // @Field(() => Float, { description: 'cantidad de productos que puede tener' })
+  // @IsNumber()
+  // @IsPositive()
+  // @Min(0)
+  // quantity:number;
+
+  @Field(() => String, { description: 'es cantidad de unidades', nullable: true })
   @IsOptional()
   @IsString()
-  quantityUnits?:string;
+  quantityUnits?: string;
 }

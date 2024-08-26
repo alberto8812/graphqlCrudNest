@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  """Example field (placeholder)"""
+  id: ID!
+  fullName: String!
+  email: String!
+  roles: [String!]!
+  isActive: Boolean!
+  lastUpdateBy: User
+  items: [Item!]!
+  itemcount: Int!
+}
+
 type Item {
   """Example field (placeholder)"""
   id: ID!
@@ -10,19 +22,8 @@ type Item {
   name: String!
 
   """Example field (placeholder)"""
-  quantity: Float!
-
-  """Example field (placeholder)"""
   quantityUnits: String
-}
-
-type User {
-  """Example field (placeholder)"""
-  id: ID!
-  fullName: String!
-  email: String!
-  roles: [String!]!
-  isActive: Boolean!
+  user: User!
 }
 
 type AuthResponse {
@@ -31,26 +32,53 @@ type AuthResponse {
 }
 
 type Query {
+  revalite: AuthResponse!
+  users(roles: [ValidRoles!] = []): [User!]!
+  user(id: ID!): User!
   items: [Item!]!
   item(id: ID!): Item!
-  users: [User!]!
-  user(id: ID!): User!
+}
+
+"""this of description of the roles"""
+enum ValidRoles {
+  admin
+  user
+  superUser
 }
 
 type Mutation {
+  signUp(signUpInput: SignUpInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+  updateuser(updateUserInput: UpdateUserInput!): User!
+  blockUser(id: ID!): User!
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
-  blockUser(id: ID!): User!
-  signUp(signUpInput: SignUpInput!): AuthResponse!
+}
+
+input SignUpInput {
+  email: String!
+  fullName: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  email: String
+  fullName: String
+  password: String
+  id: ID!
+  roles: [ValidRoles!]
+  isActive: Boolean
 }
 
 input CreateItemInput {
   """nombre del item"""
   name: String!
-
-  """cantidad de productos que puede tener"""
-  quantity: Float!
 
   """es cantidad de unidades"""
   quantityUnits: String
@@ -60,16 +88,7 @@ input UpdateItemInput {
   """nombre del item"""
   name: String
 
-  """cantidad de productos que puede tener"""
-  quantity: Float
-
   """es cantidad de unidades"""
   quantityUnits: String
   id: ID!
-}
-
-input SignUpInput {
-  email: String!
-  fullName: String!
-  password: String!
 }
