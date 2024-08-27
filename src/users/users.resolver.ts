@@ -44,7 +44,6 @@ export class UsersResolver {
 
   }
 
-
   @Mutation(() => User, { name: 'blockUser' })
   blockUser(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
