@@ -34,10 +34,10 @@ export class SeedService {
         await this.deletedataBase()
 
         //cargar usuarios
-        await this.loadUsers()
+        const user = await this.loadUsers()
         // crear items:
 
-
+        await this.loadItems(user)
 
         return true
     }
