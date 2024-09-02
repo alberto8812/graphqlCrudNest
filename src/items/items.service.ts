@@ -25,16 +25,27 @@ export class ItemsService {
   async findAll(user: User, paginationArgs: PaginationArgs, searchArgs: SearchArgs): Promise<Item[]> {
     const { limit, offset } = paginationArgs;
     const { search } = searchArgs;
-    return this.itemRepository.find({
-      take: limit,//el liminte de registro que quiero traer 
-      skip: offset,//el salto de registro
-      where: {
-        user: {
-          id: user.id
-        },
-        name: Like(`%${search}`)
-      }
-    });
+    // return this.itemRepository.find({
+    //   take: limit,//el liminte de registro que quiero traer 
+    //   skip: offset,//el salto de registro
+    //   where: {
+    //     user: {
+    //       id: user.id
+    //     },
+    //     name: Like(`%${search}`)
+    //   }
+    // });
+    // TODO: HACER UN QUERY BUILDER
+    const queryBuilder = this.itemRepository.createQueryBuilder()
+      .take(limit)
+      .skip()
+      .where('"userId=:userId"', { userId: user.id })//userId  que es una variable va a apuntar a user.id
+
+    if (search) {
+      queryBuilder.andWhere('LOWER(NAME) LIKE :name', { name: `%${search.toLocaleLowerCase()}%` })
+    }
+
+    return queryBuilder.getMany()
   }
 
   async findOne(id: string, user: User,): Promise<Item> {

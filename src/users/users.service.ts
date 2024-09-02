@@ -7,6 +7,8 @@ import * as bcrypt from 'bcrypt'
 import { ValidRoles } from 'src/auth/enum/valid-rules.enum';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ItemsService } from 'src/items/items.service';
+import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
+import { skip } from 'node:test';
 
 
 @Injectable()
@@ -31,14 +33,29 @@ export class UsersService {
 
   }
 
-  async findAll(roles: ValidRoles[]): Promise<User[]> {
+  async findAll(
+    roles: ValidRoles[],
+    paginationArg: PaginationArgs,
+    search: SearchArgs,
+  ): Promise<User[]> {
     if (roles.length === 0) {
       return this.userRepository.find({ relations: { lastUpdateBy: true } })
     }
-    return this.userRepository.createQueryBuilder('user')
+    const { limit, offset } = paginationArg;
+    const query = this.userRepository.createQueryBuilder('user')
       .leftJoinAndSelect('user.lastUpdateBy', 'lastUpdateBy')
-      .where('user.roles && :roles', { roles })
-      .getMany();
+      .take(limit)
+      .skip(offset)
+    if (roles.length > 0) {
+      query.andWhere('user.roles && :roles', { roles });
+    }
+
+    if (search) {
+      query.andWhere('LOWER(NAME) LIKE :name', { name: `%${search}%` });
+    }
+
+    return query.getMany();
+
 
 
   }
