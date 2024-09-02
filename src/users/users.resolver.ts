@@ -74,4 +74,6 @@ export class UsersResolver {
   ): Promise<Item[]> {
     return this.itemService.findAll(user, paginationArgs, search)
   }
+
+  //todo :getlistsbyUser
 }

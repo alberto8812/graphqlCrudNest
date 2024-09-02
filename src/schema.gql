@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type List {
+  """id de listite"""
+  id: ID!
+
+  """nombre de la lista de los item"""
+  name: String!
+  user: User!
+}
+
 type User {
   """Example field (placeholder)"""
   id: ID!
@@ -37,6 +46,8 @@ type Query {
   user(id: ID!): User!
   items(offset: Int = 0, limit: Int = 10, search: String): [Item!]!
   item(id: ID!): Item!
+  lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
+  list(id: Int!): List!
 }
 
 """this of description of the roles"""
@@ -57,6 +68,9 @@ type Mutation {
 
   """Ejecuta la construccion de la base de datos"""
   executeSeed: Boolean!
+  createList(createListInput: CreateListInput!): List!
+  updateList(updateListInput: UpdateListInput!): List!
+  removeList(id: Int!): List!
 }
 
 input SignUpInput {
@@ -93,5 +107,16 @@ input UpdateItemInput {
 
   """es cantidad de unidades"""
   quantityUnits: String
+  id: ID!
+}
+
+input CreateListInput {
+  """Example field (placeholder)"""
+  name: String!
+}
+
+input UpdateListInput {
+  """Example field (placeholder)"""
+  name: String
   id: ID!
 }
