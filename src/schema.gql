@@ -2,15 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type List {
-  """id de listite"""
-  id: ID!
-
-  """nombre de la lista de los item"""
-  name: String!
-  user: User!
-}
-
 type User {
   """Example field (placeholder)"""
   id: ID!
@@ -20,7 +11,26 @@ type User {
   isActive: Boolean!
   lastUpdateBy: User
   itemcount: Int!
+  listcount: Int!
   items(offset: Int = 0, limit: Int = 10, search: String): [Item!]!
+  list(offset: Int = 0, limit: Int = 10, search: String): [List!]!
+}
+
+type List {
+  """id de listite"""
+  id: ID!
+
+  """nombre de la lista de los item"""
+  name: String!
+  user: User!
+  listItem: [ListItem!]!
+}
+
+type ListItem {
+  id: ID!
+  quenatity: Float!
+  complete: Boolean!
+  item: [ListItem!]!
 }
 
 type Item {
@@ -48,6 +58,7 @@ type Query {
   item(id: ID!): Item!
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
   list(id: Int!): List!
+  listItem(id: Int!): ListItem!
 }
 
 """this of description of the roles"""
@@ -71,6 +82,9 @@ type Mutation {
 
   """Ejecuta la construccion de la base de datos"""
   executeSeed: Boolean!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(updateListItemInput: UpdateListItemInput!): ListItem!
+  removeListItem(id: Int!): ListItem!
 }
 
 input SignUpInput {
@@ -119,4 +133,15 @@ input UpdateListInput {
   """Example field (placeholder)"""
   name: String
   id: ID!
+}
+
+input CreateListItemInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateListItemInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

@@ -12,6 +12,7 @@ import { ItemsService } from 'src/items/items.service';
 import { Item } from 'src/items/entities/item.entity';
 import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
 import { ListsService } from 'src/lists/lists.service';
+import { List } from 'src/lists/entities/list.entity';
 
 @Resolver(() => User)
 @UseGuards(JwtAuthGuard)
@@ -66,13 +67,11 @@ export class UsersResolver {
     return this.itemService.itemCounterByUser(user)
 
   }
-  @ResolveField(() => Int, { name: 'itemcount' })
+  @ResolveField(() => Int, { name: 'listcount' })
   async listCount(
     @Parent() user: User // definiomos el padre
   ): Promise<number> {
-
     return this.listService.listCountByUser(user)
-
   }
 
   @ResolveField(() => [Item], { name: 'items' })
@@ -85,7 +84,7 @@ export class UsersResolver {
     return this.itemService.findAll(user, paginationArgs, search)
   }
 
-  @ResolveField(() => [Item], { name: 'items' })
+  @ResolveField(() => [List], { name: 'list' })
   async getlistByUser(
     @CurrentUser([ValidRoles.admin]) adminUser: User,
     @Parent() user: User,
