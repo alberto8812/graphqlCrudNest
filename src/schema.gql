@@ -65,12 +65,12 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
-
-  """Ejecuta la construccion de la base de datos"""
-  executeSeed: Boolean!
   createList(createListInput: CreateListInput!): List!
   updateList(updateListInput: UpdateListInput!): List!
   removeList(id: Int!): List!
+
+  """Ejecuta la construccion de la base de datos"""
+  executeSeed: Boolean!
 }
 
 input SignUpInput {

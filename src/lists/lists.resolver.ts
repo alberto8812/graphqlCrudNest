@@ -18,7 +18,7 @@ export class ListsResolver {
   createList(
     @CurrentUser() user: User,
     @Args('createListInput') createListInput: CreateListInput
-  ) {
+  ): Promise<List> {
     return this.listsService.create(createListInput, user);
   }
 
@@ -32,17 +32,27 @@ export class ListsResolver {
   }
 
   @Query(() => List, { name: 'list' })
-  findOne(@Args('id', { type: () => Int }) id: string) {
-    return this.listsService.findOne(id);
+  findOne(
+    @Args('id', { type: () => Int }) id: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.listsService.findOne(id, user);
   }
 
   @Mutation(() => List)
-  updateList(@Args('updateListInput') updateListInput: UpdateListInput) {
-    return this.listsService.update(updateListInput.id, updateListInput);
+  updateList(
+    @CurrentUser() user: User,
+    @Args('updateListInput') updateListInput: UpdateListInput,
+
+  ) {
+    return this.listsService.update(updateListInput.id, updateListInput, user);
   }
 
   @Mutation(() => List)
-  removeList(@Args('id', { type: () => Int }) id: string) {
-    return this.listsService.remove(id);
+  removeList(@Args('id', { type: () => Int }) id: string, @CurrentUser() user: User,) {
+    return this.listsService.remove(id, user);
   }
+
+
+
 }

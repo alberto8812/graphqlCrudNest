@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateListInput } from './dto/create-list.input';
 import { UpdateListInput } from './dto/update-list.input';
 import { User } from 'src/users/entities/user.entity';
@@ -16,7 +16,7 @@ export class ListsService {
   async create(
     createListInput: CreateListInput,
     user: User,
-  ) {
+  ): Promise<List> {
     const newList = this.listRespository.create({ ...createListInput, user })
     return await this.listRespository.save(newList)
 
@@ -30,6 +30,7 @@ export class ListsService {
     const queryBuilder = this.listRespository.createQueryBuilder()
       .take(offset)
       .skip(limit)
+      .where('"userId=:userId"', { userId: user.id })
     if (search) {
       queryBuilder.andWhere('Lower(NAME) LIKE :name', { name: `%${search.toLocaleLowerCase()}%` })
     }
@@ -37,15 +38,43 @@ export class ListsService {
     return queryBuilder.getMany();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} list`;
+  async findOne(
+    id: string,
+    user: User
+  ): Promise<List> {
+    const items = await this.listRespository.findOneBy({
+      id: id,
+      user: {
+        id: user.id
+      }
+    })
+    return items;
   }
 
-  update(id: string, updateListInput: UpdateListInput) {
-    return `This action updates a #${id} list`;
+  async update(
+    id: string,
+    updateListInput: UpdateListInput,
+    user: User,
+  ): Promise<List> {
+    await this.findOne(id, user)
+    const list = await this.listRespository.preload(updateListInput);
+    if (!list) throw new NotFoundException(`Item with id ${id} not found`)
+    return this.listRespository.save(list)
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} list`;
+  async remove(id: string, user: User) {
+    const list = await this.findOne(id, user);
+    await this.listRespository.delete(id)
+    return { ...list, id };
+  }
+
+  async listCountByUser(user: User): Promise<number> {
+    return await this.listRespository.count({
+      where: {
+        user: {
+          id: user.id
+        }
+      }
+    })
   }
 }
