@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
 import { ListsService } from './lists.service';
 import { List } from './entities/list.entity';
 import { CreateListInput } from './dto/create-list.input';
@@ -8,11 +8,16 @@ import { JwtAuthGuard } from 'src/auth/guards/jw-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationArgs, SearchArgs } from 'src/common/dto/args';
+import { ListItem } from 'src/list-item/entities/list-item.entity';
+import { ListItemService } from 'src/list-item/list-item.service';
 
 @Resolver(() => List)
 @UseGuards(JwtAuthGuard)
 export class ListsResolver {
-  constructor(private readonly listsService: ListsService) { }
+  constructor(
+    private readonly listsService: ListsService,
+    private readonly listitemService: ListItemService,
+  ) { }
 
   @Mutation(() => List)
   createList(
@@ -54,5 +59,22 @@ export class ListsResolver {
   }
 
 
+  @ResolveField(() => [ListItem], { name: "items" })
+  getListItems(
+    @Parent() list: List,
+    @Args() paginationArgs: PaginationArgs,
+    @Args() searchArgs: SearchArgs
+  ): Promise<ListItem[]> {
 
+    return this.listitemService.findAll(list, paginationArgs, searchArgs)
+
+  }
+
+  @ResolveField(() => Number, { name: 'countListItems' })
+  async countListItemsList(
+    @Parent() list: List,
+  ): Promise<number> {
+
+    return this.listitemService.countListItemByList(list)
+  }
 }

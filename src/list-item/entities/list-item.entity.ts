@@ -14,14 +14,15 @@ export class ListItem {
 
   @Column({ type: 'numeric' })
   @Field(() => Number)
-  quenatity: number
+  quantity: number
 
   @Column({ type: 'boolean' })
   @Field(() => Boolean)
-  complete: boolean
+  completed: boolean
 
 
   @ManyToOne(() => List, (list) => list.listItem, { lazy: true })
+  @Field(() => List)
   list: List
 
 
