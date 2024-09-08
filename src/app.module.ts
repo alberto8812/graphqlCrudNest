@@ -58,6 +58,11 @@ import { ListItemModule } from './list-item/list-item.module';
       type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
+      ssl: (process.env.STATE == 'prod') ?
+        {
+          rejectUnauthorized: false,
+          sslmode: 'require',
+        } : false as any,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
@@ -90,4 +95,9 @@ import { ListItemModule } from './list-item/list-item.module';
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+
+  }
+
+}

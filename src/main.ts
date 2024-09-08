@@ -10,6 +10,6 @@ async function bootstrap() {
       // forbidNonWhitelisted: true,//sireve para evitar que se envie enviar inromacion de lo que requiero
       //gql se encarga de hacer esa valdacion
     }))
-  await app.listen(3001);
+  await app.listen(process.env.PORT || 3001);
 }
 bootstrap();
