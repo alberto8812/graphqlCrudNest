@@ -9,6 +9,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
+import { SeedModule } from './seed/seed.module';
+import { CommonModule } from './common/common.module';
+import { ListsModule } from './lists/lists.module';
+import { ListItemModule } from './list-item/list-item.module';
 
 
 @Module({
@@ -54,6 +58,11 @@ import { JwtService } from '@nestjs/jwt';
       type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
+      ssl: (process.env.STATE == 'prod') ?
+        {
+          rejectUnauthorized: false,
+          sslmode: 'require',
+        } : false as any,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
@@ -70,8 +79,25 @@ import { JwtService } from '@nestjs/jwt';
 
     AuthModule,
 
+
+    SeedModule,
+
+
+    CommonModule,
+
+
+    ListsModule,
+
+
+    ListItemModule,
+
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {
+  constructor() {
+
+  }
+
+}
